@@ -1,0 +1,1 @@
+az deployment group create --resource-group ms-test-eventhub --template-file eventhub.json --parameters @eventhub.parameters.json

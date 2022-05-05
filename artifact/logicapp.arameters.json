@@ -1,0 +1,34 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "logicApp:Location": {
+            "value": "eastus" 
+        },
+        "logicApp:Name": {
+            "value": "logicAppMarco"
+        },      
+        "logicApp:HubFrequency": {
+            "value": "Minute"
+        },
+        "logicApp:HubInterval": {
+            "value": 1
+        },
+        "connection:eventhubs:name": {
+            "value": "eventHubName"
+        },
+        "connection:eventhubs:displayName": {
+            "value": "eventNamespaceMarco"
+        },
+        "connection:powerbi:name": {
+            "value": "powerBiConnName"
+        },
+        "connection:powerbi:displayName": {
+            "value": "powerBiConnName"
+        },
+        "connection:eventhubs:ReadRuleId": {
+            "value": "/subscriptions/80115be8-23dd-4136-918f-965b0b078853/resourceGroups/ms-test-eventhub/providers/Microsoft.EventHub/namespaces/eventNamespaceMarco/eventhubs/eventHubMarco/authorizationRules/RootManageSharedAccessKey"
+            
+        }
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "eastus" 
+        },
+        "logicapp:uri": {
+            "value": "https://github.com/marcosinig/azure-arm-eventhub/blob/master/artifact/logicapp_template.json" 
+        },
+        "eventHub:Name": {
+            "value": "eventHubMarco"
+        },
+        "eventHub:NameSpace": {
+            "value": "eventNamespaceMarco"
+        },
+        "logicApp:Name": {
+            "value": "logicAppMarco"
+        }
+    }
+}

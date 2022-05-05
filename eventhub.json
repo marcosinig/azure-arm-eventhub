@@ -1,0 +1,162 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string",
+            "metadata": {
+                "defaultValue":"[resourceGroup().location]",
+                "description": "Location"
+            }
+        },
+        "logicapp:uri": {
+            "type": "String",
+            "metadata": {
+                "defaultValue": "testeventhub"
+            }            
+        },
+        "eventHub:Name": {
+            "type": "String",
+            "metadata": {
+                "defaultValue": "testeventhub"
+            }            
+        },
+        "eventHub:NameSpace": {
+            "type": "String",
+            "metadata": {
+                "defaultValue": "testeventhub"
+            }            
+        },
+         "logicApp:Name": {
+            "type": "String",
+            "metadata": {
+                "defaultValue": "testeventhub"
+            }            
+        }
+    },
+    "variables": {
+       "eventHub:NamespaceName": "[format('{0}ns', parameters('eventHub:Name'))]",
+       "eventHub:EventHubName": "[format('{0}/{1}', variables('eventHub:NamespaceName'), parameters('eventHub:Name'))]",
+       "eventhub:SendAuthorizationRuleName": "RootManageSharedAccessKey",
+       "eventHub:SendRuleId": "[resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('eventHub:Namespace'),parameters('eventHub:Name'), variables('eventhub:SendAuthorizationRuleName'))]",
+       
+
+       "connection:eventhubs:name": "ConnectioEventsHub",
+        "connection:eventhubs:displayName": "DisplayConnectioEventsHub",            
+        "connection:powerbi:name":"ConnectionPowerBi",
+        "connection:powerbi:displayName": "DisplayConnectionPowerBi"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.EventHub/namespaces",
+            "apiVersion": "2021-11-01",
+            "name": "[parameters('eventHub:Namespace')]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "Standard",
+                "tier": "Standard",
+                "capacity": 1
+            },
+            "properties": {
+                "disableLocalAuth": false,                
+                "isAutoInflateEnabled": false,
+                "maximumThroughputUnits": 0,
+                "kafkaEnabled": false
+            },
+            "resources": [
+                {                
+                    "type": "Eventhubs",
+                    "apiVersion": "2021-11-01",
+                    "name": "[parameters('eventHub:Name')]",
+                    "location": "[parameters('location')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.EventHub/namespaces', parameters('eventHub:Namespace'))]"
+                    ],
+                    "properties": {
+                        "messageRetentionInDays": 7,
+                        "partitionCount": 1,
+                        "status": "Active"            
+                    },
+
+                    "resources": [            
+                    {
+                        "type": "authorizationRules",
+                        "apiVersion": "2017-04-01",
+                        "name": "[variables('eventhub:SendAuthorizationRuleName')]",
+                        "location": "[parameters('location')]",
+                        "dependsOn": [
+                            "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('eventHub:Namespace'), parameters('eventHub:Name'))]"
+                        ],
+                        "properties": {
+                            "rights": [
+                                "Listen",
+                                "Manage",
+                                "Send"
+                            ]
+                        }
+                    }
+                 ]
+                }               
+            ]
+        },     
+      {
+        "type": "Microsoft.Web/connections",
+        "apiVersion": "2016-06-01",
+        "location": "[parameters('Location')]",
+        "name": "[variables('connection:eventhubs:name')]",
+        "properties": {
+          "api": {
+            "id": "[concat('/subscriptions/',subscription().subscriptionId,'/providers/Microsoft.Web/locations/',parameters('Location'),'/managedApis/eventhubs')]"
+          },
+          "displayName": "[variables('connection:eventhubs:displayName')]",
+          "parameterValues": {
+            "connectionString": "[listkeys(variables('eventHub:SendRuleId'), '2021-11-01').primaryConnectionString]"
+          }
+        }
+      },
+     {
+        "apiVersion": "2021-04-01",
+        "name": "nestedTemplate",
+       "dependsOn": [
+                            "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('eventHub:Namespace'), parameters('eventHub:Name'))]"
+                        ],
+        "type": "Microsoft.Resources/deployments",
+        "properties": {           
+            "mode": "Incremental",            
+            "templateLink": {
+                "id": "[resourceId('ms-test-eventhub', 'Microsoft.Resources/templateSpecs/versions', 'logicappTemplateSpec', '1.0.0.0')]"            
+            },
+            "parameters": {
+                "logicApp:Name": {
+                    "value": "[parameters('logicApp:Name')]"
+                },
+                 "logicApp:Location": {
+                    "value": "[parameters('location')]"
+                },
+                "connection:eventhubs:name": {
+                    "value": "ConnectioEventsHub"
+                },
+                "connection:eventhubs:displayName": {
+                    "value": "DisplayConnectioEventsHub"
+                },
+               "connection:eventhubs:ReadRuleId": {
+                    "value": "[variables('eventHub:SendRuleId')]"
+                },
+                "connection:powerbi:name": {
+                    "value": "ConnectionPowerBi"
+                },
+                "connection:powerbi:displayName": {
+                    "value": "DisplayConnectionPowerBi"
+                }
+               
+            }
+        }
+     }            
+    ],
+     "outputs": {
+        "Event Hub Send Rule Id": {
+            "type": "string",
+            "value": "[variables('eventHub:SendRuleId')]"
+        }       
+    }
+}

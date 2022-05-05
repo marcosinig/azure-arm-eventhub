@@ -199,10 +199,7 @@
           "api": {
             "id": "[concat('/subscriptions/',subscription().subscriptionId,'/providers/Microsoft.Web/locations/',parameters('logicApp:Location'),'/managedApis/powerbi')]"
           },
-          "displayName": "[parameters('connection:powerbi:displayName')]",
-          "parameterValues": {
-            "token:TenantId": "[subscription().tenantId]"
-          }
+          "displayName": "[parameters('connection:powerbi:displayName')]"          
         }
       },
       {
