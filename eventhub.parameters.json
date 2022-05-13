@@ -16,6 +16,15 @@
         },
         "logicApp:Name": {
             "value": "logicAppMarco"
+        },
+        "connection:powerbi:groupId": {
+            "value": "75580787-02bc-4f8e-bc11-193163ffb547"
+        },
+        "connection:powerbi:datasetId": {
+            "value": "7b8a032e-cc32-473b-b359-cc1ef3f2f771"
+        },
+        "connection:powerbi:tableName": {
+            "value": "TemperatureDataset"
         }
     }
 }

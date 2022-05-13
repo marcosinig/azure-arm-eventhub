@@ -32,7 +32,25 @@
             "metadata": {
                 "defaultValue": "testeventhub"
             }            
+        },
+      "connection:powerbi:tableName": {
+        "type": "string",
+        "metadata": {
+          "description": "Powerbi Table name"
         }
+      },
+      "connection:powerbi:datasetId": {
+        "type": "string",
+        "metadata": {
+          "description": "Powerbi DatasetName"
+        }
+      },
+      "connection:powerbi:groupId": {
+        "type": "string",
+        "metadata": {
+          "description": "Powerbi Groupid - Workspace"
+        }
+      }
     },
     "variables": {
        "eventHub:NamespaceName": "[format('{0}ns', parameters('eventHub:Name'))]",
@@ -75,7 +93,9 @@
                     "properties": {
                         "messageRetentionInDays": 7,
                         "partitionCount": 1,
-                        "status": "Active"            
+                        "status": "Active",
+                        "kafkaEnabled": false
+
                     },
 
                     "resources": [            
@@ -147,8 +167,16 @@
                 },
                 "connection:powerbi:displayName": {
                     "value": "DisplayConnectionPowerBi"
+                },
+                "connection:powerbi:groupId": {
+                    "value": "[parameters('connection:powerbi:groupId')]"
+                },
+                "connection:powerbi:datasetId": {
+                      "value": "[parameters('connection:powerbi:datasetId')]"
+                },
+                "connection:powerbi:tableName": {
+                      "value": "[parameters('connection:powerbi:tableName')]"
                 }
-               
             }
         }
      }            

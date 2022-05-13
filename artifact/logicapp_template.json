@@ -42,11 +42,22 @@
       "connection:powerbi:displayName": {
         "type": "string"
       },
-      "connection:powerbi:TenantId": {
+      "connection:powerbi:tableName": {
         "type": "string",
-        "defaultValue": "[subscription().tenantId]",
         "metadata": {
-          "description": "The tenant ID of for the Azure Active Directory application"
+          "description": "Powerbi Table name"
+        }
+      },
+      "connection:powerbi:datasetId": {
+        "type": "string",
+        "metadata": {
+          "description": "Powerbi DatasetName"
+        }
+      },
+      "connection:powerbi:groupId": {
+        "type": "string",
+        "metadata": {
+          "description": "Powerbi Groupid - Workspace"
         }
       }
     },
@@ -69,6 +80,18 @@
               "$connections": {
                 "defaultValue": {},
                 "type": "Object"
+              },
+              "groupId": {
+                  "defaultValue": "[parameters('connection:powerbi:groupId')]",
+                  "type": "String"
+              },
+              "datasetId": {
+                  "defaultValue": "[parameters('connection:powerbi:datasetId')]",
+                  "type": "String"
+              },
+              "tableName": {
+                  "defaultValue": "[parameters('connection:powerbi:tableName')]",
+                  "type": "String"
               }
             },
             "triggers": {
@@ -86,7 +109,7 @@
                     }
                   },
                   "method": "get",
-                  "path": "/@{encodeURIComponent('eventhub1')}/events/batch/head",
+                  "path": "/@{encodeURIComponent(parameters('connection:eventhubs:name'))}/events/batch/head",
                   "queries": {
                     "consumerGroupName": "$Default",
                     "contentType": "application/json",
@@ -114,7 +137,7 @@
                     }
                   },
                   "method": "post",
-                  "path": "/v1.0/myorg/groups/@{encodeURIComponent('5e4687b8-cfe1-4ebf-a540-ad40f6deb6bb')}/datasets/@{encodeURIComponent('33492ad7-23b5-491e-9fc5-6e3b679c7ce8')}/tables/@{encodeURIComponent('RealTimeData')}/rows",
+                  "path": "/v1.0/myorg/groups/@{encodeURIComponent(parameters('groupId'))}/datasets/@{encodeURIComponent(parameters('datasetId'))}/tables/@{encodeURIComponent(parameters('tableName'))}/rows",
                   "queries": {
                     "pbi_source": "powerAutomate"
                   }

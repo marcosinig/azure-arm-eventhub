@@ -28,7 +28,16 @@
         },
         "connection:eventhubs:ReadRuleId": {
             "value": "/subscriptions/80115be8-23dd-4136-918f-965b0b078853/resourceGroups/ms-test-eventhub/providers/Microsoft.EventHub/namespaces/eventNamespaceMarco/eventhubs/eventHubMarco/authorizationRules/RootManageSharedAccessKey"
-            
+        },
+        "connection:powerbi:groupId": {
+            "value": "75580787-02bc-4f8e-bc11-193163ffb547"
+        },
+        "connection:powerbi:datasetId": {
+            "value": "7b8a032e-cc32-473b-b359-cc1ef3f2f771"
+        },
+        "connection:powerbi:tableName": {
+            "value": "TemperatureDataset"
         }
+    }
     }
 }
